@@ -44,28 +44,27 @@ uses: **Andreas Blattmann et al. 2023 [Stable video diffusion: Scaling latent vi
 * shape($\mathbf{z}$): $F`, \frac {H}{8}, \frac {W}{8}, 4$ 
 * Noise frames  $\mathbf{z}_\tau = \alpha_\tau \mathbf{z}_0 +\sigma_\tau $ follows $ \alpha_\tau$ and $\sigma_\tau$ from 
 * Karras et al, 2022 [Elucidating the Design Space of Diffusion-Based Generative Models](https://arxiv.org/abs/2206.00364) https://github.com/NVlabs/edm
-* denoising funciton $\mathbf{f}_\theta$, trained with  score matching objective (eq.3 and 68 of Elucidating) $\nabla_x \log p(x;\sigma) = (D(x;\sigma) - x)/\sigma^2$
+* denoising funciton $\mathbf{f}_\theta$, ***trained with  score matching objective*** 
 
- or 
- ``` python
-@persistence.persistent_class
-class EDMLoss:
-    def __init__(self, P_mean=-1.2, P_std=1.2, sigma_data=0.5):
-        self.P_mean = P_mean
-        self.P_std = P_std
-        self.sigma_data = sigma_data
+is it eq.3 and 68 of Elucidating? 
 
-    def __call__(self, net, images, labels=None, augment_pipe=None):
-        rnd_normal = torch.randn([images.shape[0], 1, 1, 1], device=images.device)
-        sigma = (rnd_normal * self.P_std + self.P_mean).exp()
-        weight = (sigma ** 2 + self.sigma_data ** 2) / (sigma * self.sigma_data) ** 2
-        y, augment_labels = augment_pipe(images) if augment_pipe is not None else (images, None)
-        n = torch.randn_like(y) * sigma
-        D_yn = net(y + n, sigma, labels, augment_labels=augment_labels)
-        loss = weight * ((D_yn - y) ** 2)
-        return loss
-```
+$$\nabla_x \log p(x;\sigma) = \frac{D(x;\sigma) - x}{\sigma^2}$$
 
+ or EDMLoss from https://github.com/NVlabs/edm/training/loss.py
+$$
+x \sim N(I,0) ,\quad s_p = 1.2,\quad\mu_p = -1.2, \sigma_{data} = 0.5\\
+\sigma = e^{x \cdot s_p +\mu_p } \\
+w = \frac{\sigma ^2 + \sigma_{data}^2}{(\sigma \cdot \sigma_{data})^2}\\
+n \sim N(I,0) \cdot \sigma \\
+\mathcal{L} = w (f(y + n, \sigma ) - y)^2
+$$
+Conditioning 
+* concatenating condition channels with $\mathbf{z}_\tau$
+    * Blattman, Stable Video Diffusion .. 
+    * Zeng, RGBX
+    * Ke et al, 2024. [Repurposing diffusion-based image generators for monocular depth estimation](https://openaccess.thecvf.com/content/CVPR2024/papers/Ke_Repurposing_Diffusion-Based_Image_Generators_for_Monocular_Depth_Estimation_CVPR_2024_paper.pdf) code https://github.com/prs-eth/marigold
+    * Kocsis et al 2023, [Intrinsic Image Diffusion for Indoor Single-view Material Estimation](https://arxiv.org/abs/2312.12274) code https://github.com/Peter-Kocsis/IntrinsicImageDiffusion
 
-
-
+* injecting condition thru cross attention: 
+    * Blattman, Stable Video Diffusion ..
+    * Rombach et al [High-resolution image synthesis with latent diffusion model](https://openaccess.thecvf.com/content/CVPR2022/papers/Rombach_High-Resolution_Image_Synthesis_With_Latent_Diffusion_Models_CVPR_2022_paper.pdf) code https://github.com/CompVis/latent-diffusion
