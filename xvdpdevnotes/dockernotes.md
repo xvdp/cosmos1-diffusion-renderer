@@ -8,11 +8,14 @@ https://github.com/nv-tlabs/cosmos1-diffusion-renderer/pull/23/commits/2ed132efc
 * Ensure TORCH_EXTENSIONS exists, maybe store per cuda version?
 * tested with A6000 48G. 
 
+`checkpoints` are stored in `/mnt/Data/data/weights/NvidiaCosmos/checkpoints` link as a -v with dockerstart.sh
 
 ```bash
 # build
 docker build . -t nvcr.io/xvdp/cosmos-predict1:latest
 # run
-docker run --gpus device=1 --cpuset-cpus=0-10 --network=host  -it --rm --shm-size 20g -v `pwd`:/app --workdir /app -e TORCH_EXTENSIONS_DIR=/app/tmp nvcr.io/xvdp/cosmos-predict1:latest
+bash dockerstart.sh # loads volumes for checkpoints and for images
 ```
+
+
 ## TODO . TEST - Dockerfile using FROM nvcr image with 12.6 and uv, no conda.
