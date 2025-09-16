@@ -17,8 +17,14 @@ training: including data with noisy conditions to ensure robustness.
 
 ## Related
 Zeng Deschaintre Georgiev Geoffroy 2024 Adobe [RGB↔X: Image decomposition and synthesis using material and lighting-aware diffusion models](https://arxiv.org/html/2405.00666v1)
-* github  https://github.com/zheng95z/rgbx also uses diffusion models
-
+* github  https://github.com/zheng95z/rgbx finetuned on Rombach et al 2022. 
+* uses v-prediction (From Salimans and Ho 2022 [Progressive Distillation for Fast Sampling of Diffusion Models](https://arxiv.org/abs/2202.00512) https://github.com/google-research/google-research/tree/master/diffusion_distillation) instead noise prediction , 
+* v - Section D. page 14. v. rotation velocity , for 
+$$\text{where sampling data, } \mathbf{x},  \text{ from  noise, } \epsilon, \quad \mathbf{x} = f(\mathbf{z}; \theta)\\ \mathbf{v}_\phi \equiv \frac{d\mathbf{z}_\phi}{d\phi} = \frac{d \cos(\phi)}{d \phi}\mathbf{x} + \frac{d \sin(\phi)}{d\phi}\epsilon \\
+...\\
+\mathbf{x} = \cos(\phi)\mathbf{z} - \sin(\phi)\mathbf{v}_\phi, \qquad \epsilon = \sin(\phi)\mathbf{z}_\phi + \cos(\phi)\mathbf{v}_\phi\\
+\text{defining predicted velocity }\qquad\mathbf{\hat{v}}_\phi(\mathbf{z}_\phi) \equiv \cos(\phi)\hat{\epsilon}_\phi (\mathbf{z}_\phi) - \sin(\phi)\mathbf{\hat{x}}_\phi(\mathbf{z}_\phi)$$
+DDIM rotates z. But the cool thing about that Progressive Diostillation is minimization of denoising steps
 ## Notes on Deferred rendering and PBR
 PBR Params:  Albedo, Normal, Roughness, Metalicity, Depth, AO, Emission, ClearCoat
 1. G-Buffer Pass: Render to surface attributes per pixel to PBR parameters
@@ -58,7 +64,7 @@ w = \frac{\sigma ^2 + \sigma_{data}^2}{(\sigma \cdot \sigma_{data})^2}\\
 n \sim N(I,0) \cdot \sigma \\
 \mathcal{L} = w (f(y + n, \sigma ) - y)^2
 $$
-Conditioning 
+## Conditioning 
 * concatenating condition channels with $\mathbf{z}_\tau$
     * Blattman, Stable Video Diffusion .. 
     * Zeng, RGBX
