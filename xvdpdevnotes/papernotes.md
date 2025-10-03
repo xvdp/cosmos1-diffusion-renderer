@@ -157,4 +157,3 @@ Gbuffers -> encoder ->  Diffusion Unet -> decoder
 
 * Domain embedding. -> pixel aligned buffers by concat
 * Env maps -> , and repurpose text/image CLIP features for lighting condition  -> generalize coditional signals multi res feature maps? ok
-   

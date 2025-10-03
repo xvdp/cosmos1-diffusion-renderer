@@ -25,21 +25,17 @@ PYTHONPATH=$(pwd) python cosmos_predict1/diffusion/inference/inference_inverse_r
 --save_video=False
 
 # RELIGHT
-#
-# --dataset_path=asset/example_results/image_delighting/
-# --video_save_folder=asset/example_results/image_relighting/
-# --envlight_ind 0 1 2 3 --use_custom_envmap=True
-# ENV_LIGHT_PATH_LIST = [ "asset/examples/hdri_examples/sunny_vondelpark_2k.hdr",... # hardcoded
-#
+    --dataset_path=asset/example_results/image_delighting/
+    --video_save_folder=asset/example_results/image_relighting/
+    --envlight_ind 0 1 2 3 --use_custom_envmap=True
+    ENV_LIGHT_PATH_LIST = [ "asset/examples/hdri_examples/sunny_vondelpark_2k.hdr",... # hardcoded
 PYTHONPATH=$(pwd) python cosmos_predict1/diffusion/inference/inference_forward_renderer.py \
     --checkpoint_dir checkpoints --diffusion_transformer_dir Diffusion_Renderer_Forward_Cosmos_7B \
     --dataset_path=asset/example_results/image_delighting/gbuffer_frames --num_video_frames 1 \
     --envlight_ind 0 1 2 3 --use_custom_envmap=True --video_save_folder=asset/example_results/image_relighting/
 
 # RANDOM RELIGHT from SEED
-# --use_custom_envmap=False # --envlight_ind 0 1 2 3 is ignored
-#
-#
+    --use_custom_envmap=False # --envlight_ind 0 1 2 3 is ignored
 ```
 CUDA_HOME=$CONDA_PREFIX PYTHONPATH=$(pwd) python cosmos_predict1/diffusion/inference/inference_forward_renderer.py \
     --checkpoint_dir checkpoints --diffusion_transformer_dir Diffusion_Renderer_Forward_Cosmos_7B \
@@ -48,7 +44,7 @@ CUDA_HOME=$CONDA_PREFIX PYTHONPATH=$(pwd) python cosmos_predict1/diffusion/infer
     --video_save_folder=asset/example_results/image_relighting_random/
 ```
 # MY EXAMPLES
-# scale or proportion image to 1280x704
+scale or proportion image to 1280x704
 
     --dataset_path=asset/mytests/images/
     --video_save_folder=asset/mytests/image_delighting
@@ -73,7 +69,7 @@ PYTHONPATH=$(pwd) python cosmos_predict1/diffusion/inference/inference_forward_r
 #
 # --rotate_light bool, rotate fixed amount per frame
 # --use_fixed_frame_ind     bool [false]
-# --fixed_frame_ind         int [0]
+# --fixed_frame_ind         int [0] `
 # rots = np.linspace(0, 2 * np.pi, num_frames) if rotate_envlight else [0] * num_frames
 ```
 
@@ -92,3 +88,10 @@ PYTHONPATH=$(pwd) python cosmos_predict1/diffusion/inference/inference_inverse_r
 PYTHONPATH=$(pwd) python cosmos_predict1/diffusion/inference/inference_forward_renderer.py --checkpoint_dir checkpoints --diffusion_transformer_dir Diffusion_Renderer_Forward_Cosmos_7B --dataset_path=${OUT}/gbuffer_frames --num_video_frames 1 --envlight_ind 0 1 2 3 --use_custom_envmap=True --video_save_folder=${OUT}/relit/
 ```
 ## pick one env and render a video rotation
+
+PYTHONPATH=$(pwd) python cosmos_predict1/diffusion/inference/inference_forward_renderer.py \
+    --checkpoint_dir checkpoints --diffusion_transformer_dir Diffusion_Renderer_Forward_Cosmos_7B \
+    --dataset_path=asset/example_results/video_delighting/gbuffer_frames --num_video_frames 57 \
+    --envlight_ind 0 1 2 3 --use_custom_envmap=True \
+    --video_save_folder=asset/example_results/video_relighting_rotation/ --rotate_light=True --use_fixed_frame_ind=True
+
